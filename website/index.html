@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twin Deficits · Neel Nanavati</title>
+<meta name="author" content="Neel Nanavati">
+<meta name="description" content="Interactive results: do fiscal deficits move with current account deficits in the U.S., Germany and Japan?">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --good: #006300;
+  --zero: #898781;
+  --ci: rgba(11,11,11,0.28);
+  --tip-bg: #ffffff;
+  --shadow: 0 6px 24px rgba(0,0,0,0.10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --good: #0ca30c;
+    --ci: rgba(255,255,255,0.30);
+    --tip-bg: #252524;
+    --shadow: 0 6px 24px rgba(0,0,0,0.5);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface-1: #1a1a19;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255,255,255,0.10);
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --good: #0ca30c;
+  --ci: rgba(255,255,255,0.30);
+  --tip-bg: #252524;
+  --shadow: 0 6px 24px rgba(0,0,0,0.5);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--text-primary);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 64px; }
+
+header.top {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 0 8px; gap: 12px;
+}
+.brand { font-size: 14px; color: var(--text-secondary); letter-spacing: 0.02em; }
+.theme-btn {
+  font: inherit; font-size: 13px; color: var(--text-secondary);
+  background: transparent; border: 1px solid var(--border); border-radius: 999px;
+  padding: 4px 12px; cursor: pointer;
+}
+.theme-btn:hover { color: var(--text-primary); }
+
+.hero { padding: 40px 0 24px; max-width: 760px; }
+.hero h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.12; margin: 0 0 16px; letter-spacing: -0.01em; }
+.hero p { color: var(--text-secondary); margin: 0 0 12px; font-size: 18px; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 24px 0 8px; }
+.stat {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px;
+}
+.stat .k { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+.stat .v { font-size: 30px; font-weight: 600; margin: 4px 0 2px; }
+.stat .s { font-size: 13px; color: var(--text-muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+
+section { margin-top: 56px; }
+section > h2 { font-size: 24px; margin: 0 0 6px; }
+section > .lede { color: var(--text-secondary); margin: 0 0 18px; max-width: 760px; }
+
+.card {
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 18px 12px;
+}
+.controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 2px; }
+.seg button {
+  font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--text-secondary);
+  padding: 5px 12px; border-radius: 999px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); }
+.ctl-label { font-size: 13px; color: var(--text-secondary); }
+input[type=range] { accent-color: var(--series-1); vertical-align: middle; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--text-secondary); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.lkey { width: 16px; height: 2px; border-radius: 2px; display: inline-block; }
+
+.multiples { display: grid; gap: 8px; }
+.multiples.cols3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 760px) { .multiples.cols3 { grid-template-columns: 1fr; } }
+.panel-title { font-size: 14px; font-weight: 600; margin: 4px 0 0; }
+.panel-sub { font-size: 12px; color: var(--text-muted); margin: 0 0 2px; }
+.chart { width: 100%; position: relative; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+
+svg text { fill: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+svg .lbl { fill: var(--text-secondary); font-size: 12px; }
+svg .grid { stroke: var(--grid); stroke-width: 1; }
+svg .zero { stroke: var(--zero); stroke-width: 1; stroke-dasharray: 3 3; }
+svg .xhair { stroke: var(--text-muted); stroke-width: 1; }
+svg .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+svg .pt { stroke: var(--surface-1); stroke-width: 2; }
+
+.note { font-size: 13px; color: var(--text-muted); margin: 10px 0 4px; }
+
+.tip {
+  position: fixed; pointer-events: none; z-index: 10; opacity: 0; transition: opacity .08s;
+  background: var(--tip-bg); color: var(--text-primary); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: var(--shadow); padding: 10px 12px; font-size: 13px; min-width: 160px;
+}
+.tip.on { opacity: 1; }
+.tip .t { font-weight: 600; margin-bottom: 6px; }
+.tip .r { display: grid; grid-template-columns: 14px auto 1fr; align-items: center; gap: 8px; line-height: 1.7; }
+.tip .r .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+.tip .r .nm { color: var(--text-secondary); }
+.tip .extra { color: var(--text-secondary); margin-top: 6px; font-size: 12px; }
+
+.takeaways { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.takeaways .card h3 { font-size: 15px; margin: 0 0 6px; }
+.takeaways .card p { margin: 0 0 8px; color: var(--text-secondary); font-size: 14px; }
+
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--text-secondary); font-weight: 600; }
+td .p { color: var(--text-muted); }
+td.sig .v { font-weight: 700; }
+td.sig .p { color: var(--good); }
+tbody tr:hover { background: color-mix(in srgb, var(--text-primary) 4%, transparent); }
+
+ul.limits { color: var(--text-secondary); padding-left: 20px; }
+ul.limits li { margin-bottom: 6px; }
+footer { margin-top: 56px; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 16px; }
+.err { padding: 24px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-1); }
+code { font-size: 0.92em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><strong>Neel Nanavati</strong> · Independent Study &amp; Research</div>
+    <button class="theme-btn" id="themeBtn" type="button">Toggle theme</button>
+  </header>
+
+  <div class="hero">
+    <h1>Do government deficits travel with trade deficits?</h1>
+    <p>The <strong>twin deficits hypothesis</strong> says that when a government borrows more, the country's current account worsens too. If it holds, the current account should have a <strong>positive slope</strong> on the fiscal balance.</p>
+    <p>This page tests that for the United States, Germany and Japan using IMF and BEA annual data (% of GDP, through 2024). Hover any chart to read exact values.</p>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <section>
+    <h2>1. The two balances over time</h2>
+    <p class="lede">Fiscal balance (government net lending) and current account balance, % of GDP. Below zero means a deficit. Hover to compare both lines in any year.</p>
+    <div class="card">
+      <div class="controls">
+        <div class="legend">
+          <span><i class="lkey" style="background:var(--series-1)"></i>Fiscal balance</span>
+          <span><i class="lkey" style="background:var(--series-2)"></i>Current account</span>
+        </div>
+      </div>
+      <div class="multiples" id="levels"></div>
+      <p class="note">Germany starts in 1991 (reunification). U.S. fiscal series: BEA total government, Germany and Japan: IMF WEO general government.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Is a bigger deficit paired with a weaker current account?</h2>
+    <p class="lede">Each dot is one year. The line is the least-squares fit of current account on fiscal balance. An upward line is consistent with twin deficits. Hover a dot to see the year.</p>
+    <div class="card">
+      <div class="controls">
+        <span class="ctl-label">Sample</span>
+        <div class="seg" id="scatterSample">
+          <button type="button" data-v="full" aria-pressed="true">Full sample</button>
+          <button type="button" data-v="common" aria-pressed="false">Common 2001–2024</button>
+        </div>
+        <span class="ctl-label">Measure</span>
+        <div class="seg" id="scatterMode">
+          <button type="button" data-v="lev" aria-pressed="true">Levels</button>
+          <button type="button" data-v="dif" aria-pressed="false">Year-on-year changes</button>
+        </div>
+      </div>
+      <div class="multiples cols3" id="scatter"></div>
+      <p class="note">Fitted slopes here are plain OLS and match the regression table. Significance uses Newey-West standard errors (lag 2).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. The relationship is not stable over time</h2>
+    <p class="lede">Rolling correlation between fiscal balance and current account, computed over the years ending in each point. Positive values agree with twin deficits. Drag the slider to change the window.</p>
+    <div class="card">
+      <div class="controls">
+        <div class="legend" id="rollLegend"></div>
+        <span style="flex:1"></span>
+        <label class="ctl-label" for="win">Window: <strong id="winVal">10</strong> years</label>
+        <input id="win" type="range" min="5" max="20" step="1" value="10">
+      </div>
+      <div class="chart" id="rolling"></div>
+      <p class="note">With roughly 10 observations per window, correlations swing widely and neighbouring windows overlap heavily. Read this as descriptive, not causal.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Regression estimates</h2>
+    <p class="lede">Slope of the current account on the fiscal balance, with 95% confidence intervals from Newey-West standard errors. An interval that crosses zero means the slope is not statistically different from zero.</p>
+    <div class="card">
+      <div class="controls">
+        <span class="ctl-label">Specification</span>
+        <div class="seg" id="coefMode">
+          <button type="button" data-v="lev" aria-pressed="true">Levels</button>
+          <button type="button" data-v="dif" aria-pressed="false">First differences</button>
+        </div>
+      </div>
+      <div class="chart" id="coef"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="controls"><strong style="font-size:14px">All specifications</strong><span class="ctl-label">Slope (p-value). Bold and green = significant at 5%.</span></div>
+      <div class="tablewrap"><table id="resTable"></table></div>
+      <p class="note">Excl. COVID drops 2020–2021. COVID dummy adds an indicator for those years. PO = Phillips-Ouliaris cointegration test p-value (reported between 0.01 and 0.15, so 0.15 means 0.15 or above).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. What the evidence says</h2>
+    <div class="takeaways">
+      <div class="card"><h3>Weak and mixed overall</h3><p>Slopes are positive for Germany and Japan, but zero or negative for the U.S. in every specification.</p></div>
+      <div class="card"><h3>Germany: levels only</h3><p>Germany's strong levels slope (about 0.97) disappears in first differences. Both series trend over 2000–2018, which inflates the levels result.</p></div>
+      <div class="card"><h3>Japan: small but real</h3><p>Japan is the only country with a significant first-difference slope (0.11, 2001–2024), and it fades when COVID years are dropped.</p></div>
+      <div class="card"><h3>Levels may be spurious</h3><p>Unit-root tests mostly fail to reject, and no cointegration test has a p-value below 0.11, so first differences are the safer test.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Limitations</h2>
+    <ul class="limits">
+      <li>Small samples: 24 to 45 annual observations. Newey-West p-values are approximate and unit-root tests have low power.</li>
+      <li>Mixed U.S. source: the U.S. fiscal series is BEA (total government), while Germany and Japan use IMF WEO. The two U.S. series correlate at 0.986 over 2001–2024.</li>
+      <li>Bivariate only: no controls for private saving, investment or the real exchange rate, and no cyclical adjustment.</li>
+      <li>Correlation is not causation. Neither the scatter nor the rolling correlation identifies the direction of effect.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Data: International Monetary Fund, <em>World Economic Outlook</em> (GGXCNL_NGDP, BCA_NGDPD); U.S. Bureau of Economic Analysis via FRED (AD01RC1A027NBEA). Analysis in R 4.5.2 (<code>Twin deficit Final.R</code>). This page reads <code>twin_deficits_merged.csv</code> and <code>twin_deficits_results.csv</code> directly, so re-running the R script updates it.
+    <p style="margin:12px 0 0">© 2026 Neel Nanavati · Independent Study &amp; Research. All rights reserved.</p>
+  </footer>
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  const COUNTRIES = [
+    { iso: "DEU", name: "Germany", short: "Germany", color: "--series-1" },
+    { iso: "JPN", name: "Japan",   short: "Japan",   color: "--series-2" },
+    { iso: "USA", name: "United States", short: "U.S.", color: "--series-3" },
+  ];
+  const COMMON_START = 2001;
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const NS = "http://www.w3.org/2000/svg";
+
+  // ---------- theme toggle ----------
+  const themeBtn = document.getElementById("themeBtn");
+  try { const t = localStorage.getItem("td-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  themeBtn.addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const next = cur === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("td-theme", next); } catch (e) {}
+    renderAll();
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => renderAll());
+
+  // ---------- helpers ----------
+  function parseCSV(text) {
+    const lines = text.trim().split(/\r?\n/);
+    const split = (l) => {
+      const out = []; let cur = "", q = false;
+      for (const ch of l) {
+        if (ch === '"') q = !q;
+        else if (ch === "," && !q) { out.push(cur); cur = ""; }
+        else cur += ch;
+      }
+      out.push(cur); return out;
+    };
+    const head = split(lines[0]);
+    return lines.slice(1).map((l) => {
+      const v = split(l), o = {};
+      head.forEach((h, i) => { const n = Number(v[i]); o[h] = v[i] !== "" && !isNaN(n) ? n : v[i]; });
+      return o;
+    });
+  }
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(parent, x, y, s, attrs) {
+    const t = el("text", Object.assign({ x, y }, attrs || {}), parent);
+    t.textContent = s; return t;
+  }
+  const scale = (d0, d1, r0, r1) => (v) => r0 + ((v - d0) / (d1 - d0)) * (r1 - r0);
+  function niceTicks(lo, hi, n) {
+    const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const err = step0 / mag;
+    const step = (err >= 7 ? 10 : err >= 3 ? 5 : err >= 1.5 ? 2 : 1) * mag;
+    const out = [];
+    for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+    return out;
+  }
+  const fmt = (v, d = 1) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(d);
+  const fmtP = (p) => p < 0.001 ? "<0.001" : p.toFixed(3);
+  function mean(a) { return a.reduce((s, x) => s + x, 0) / a.length; }
+  function corr(x, y) {
+    const mx = mean(x), my = mean(y); let sxy = 0, sxx = 0, syy = 0;
+    for (let i = 0; i < x.length; i++) { const a = x[i] - mx, b = y[i] - my; sxy += a * b; sxx += a * a; syy += b * b; }
+    return sxy / Math.sqrt(sxx * syy);
+  }
+  function ols(x, y) {
+    const mx = mean(x), my = mean(y); let sxy = 0, sxx = 0;
+    for (let i = 0; i < x.length; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; }
+    const b = sxy / sxx; return { b, a: my - b * mx };
+  }
+
+  // ---------- tooltip ----------
+  const tip = document.getElementById("tip");
+  function showTip(evt, title, rows, extra) {
+    tip.replaceChildren();
+    const t = document.createElement("div"); t.className = "t"; t.textContent = title; tip.appendChild(t);
+    for (const r of rows) {
+      const row = document.createElement("div"); row.className = "r";
+      const k = document.createElement("i"); k.className = "lkey"; k.style.background = r.color || "transparent";
+      const v = document.createElement("span"); v.className = "val"; v.textContent = r.value;
+      const n = document.createElement("span"); n.className = "nm"; n.textContent = r.name;
+      row.append(k, v, n); tip.appendChild(row);
+    }
+    if (extra) { const e = document.createElement("div"); e.className = "extra"; e.textContent = extra; tip.appendChild(e); }
+    tip.classList.add("on");
+    const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = evt.clientX + pad, y = evt.clientY + pad;
+    if (x + w > innerWidth - 8) x = evt.clientX - w - pad;
+    if (y + h > innerHeight - 8) y = evt.clientY - h - pad;
+    tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+  }
+  const hideTip = () => tip.classList.remove("on");
+
+  // ---------- state ----------
+  let panel = [], results = [];
+  const state = { scatterSample: "full", scatterMode: "lev", window: 10, coefMode: "lev" };
+  const byIso = (iso) => panel.filter((r) => r.iso === iso).sort((a, b) => a.year - b.year);
+
+  function segControl(id, key) {
+    const root = document.getElementById(id);
+    root.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      state[key] = b.dataset.v;
+      root.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      renderAll();
+    });
+  }
+
+  // ---------- stat tiles ----------
+  function renderStats() {
+    const root = document.getElementById("stats"); root.replaceChildren();
+    for (const c of COUNTRIES) {
+      const r = results.find((x) => x.sample.startsWith(c.short) && x.sample.includes("full"));
+      if (!r) continue;
+      const d = document.createElement("div"); d.className = "stat";
+      const k = document.createElement("div"); k.className = "k";
+      const dot = document.createElement("i"); dot.className = "dot"; dot.style.background = css(c.color);
+      k.append(dot, document.createTextNode(c.name + " · first-difference slope"));
+      const v = document.createElement("div"); v.className = "v"; v.textContent = fmt(r.dif_slope, 2);
+      const s = document.createElement("div"); s.className = "s";
+      s.textContent = `p = ${fmtP(r.dif_p)} · ${r.dif_p < 0.05 ? "significant" : "not significant"} · ${r.first}–${r.last}, n = ${r.n}`;
+      d.append(k, v, s); root.appendChild(d);
+    }
+  }
+
+  // ---------- 1. levels small multiples, shared crosshair ----------
+  function renderLevels() {
+    const root = document.getElementById("levels"); root.replaceChildren();
+    const W = Math.max(320, root.clientWidth), H = W < 600 ? 190 : 170;
+    const m = { l: 36, r: W < 600 ? 92 : 120, t: 10, b: 24 };
+    const all = panel.flatMap((r) => [r.fd, r.ca]);
+    const yLo = Math.floor(Math.min(...all) / 5) * 5, yHi = Math.ceil(Math.max(...all) / 5) * 5;
+    const x = scale(1980, 2024, m.l, W - m.r), y = scale(yLo, yHi, H - m.b, m.t);
+    const hairs = [], dotsets = [];
+    const fdC = css("--series-1"), caC = css("--series-2");
+
+    COUNTRIES.forEach((c) => {
+      const data = byIso(c.iso);
+      const wrap = document.createElement("div");
+      const h = document.createElement("div"); h.className = "panel-title"; h.textContent = c.name;
+      const chart = document.createElement("div"); chart.className = "chart";
+      wrap.append(h, chart); root.appendChild(wrap);
+      const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${c.name}: fiscal balance and current account, % of GDP` }, chart);
+      for (const t of niceTicks(yLo, yHi, 4)) {
+        el("line", { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? "zero" : "grid" }, svg);
+        txt(svg, m.l - 6, y(t) + 4, t === 0 ? "0" : fmt(t, 0), { "text-anchor": "end" });
+      }
+      for (let yr = 1980; yr <= 2020; yr += 10) txt(svg, x(yr), H - 6, String(yr), { "text-anchor": "middle" });
+      const path = (k) => data.map((d, i) => (i ? "L" : "M") + x(d.year).toFixed(1) + "," + y(d[k]).toFixed(1)).join("");
+      el("path", { d: path("fd"), class: "line", stroke: fdC }, svg);
+      el("path", { d: path("ca"), class: "line", stroke: caC }, svg);
+      // direct end labels with leader-free nudge
+      const last = data[data.length - 1];
+      let yf = y(last.fd), yc = y(last.ca);
+      if (Math.abs(yf - yc) < 14) { const mid = (yf + yc) / 2; yf = mid + (yf >= yc ? 7 : -7); yc = mid + (yc > yf ? 7 : -7); }
+      el("circle", { cx: x(last.year), cy: y(last.fd), r: 4, fill: fdC, class: "pt" }, svg);
+      el("circle", { cx: x(last.year), cy: y(last.ca), r: 4, fill: caC, class: "pt" }, svg);
+      txt(svg, x(last.year) + 8, yf + 4, `Fiscal ${fmt(last.fd)}`, { class: "lbl" });
+      txt(svg, x(last.year) + 8, yc + 4, `CA ${fmt(last.ca)}`, { class: "lbl" });
+
+      const hair = el("line", { y1: m.t, y2: H - m.b, class: "xhair", visibility: "hidden" }, svg);
+      const d1 = el("circle", { r: 4, fill: fdC, class: "pt", visibility: "hidden" }, svg);
+      const d2 = el("circle", { r: 4, fill: caC, class: "pt", visibility: "hidden" }, svg);
+      hairs.push(hair); dotsets.push({ data, d1, d2 });
+
+      const hit = el("rect", { x: m.l, y: 0, width: W - m.r - m.l, height: H, fill: "transparent" }, svg);
+      hit.addEventListener("pointermove", (e) => {
+        const pt = svg.getBoundingClientRect();
+        const px = ((e.clientX - pt.left) / pt.width) * W;
+        const yr = Math.round(scale(m.l, W - m.r, 1980, 2024)(px));
+        const yrC = Math.max(1980, Math.min(2024, yr));
+        hairs.forEach((hh) => { hh.setAttribute("x1", x(yrC)); hh.setAttribute("x2", x(yrC)); hh.setAttribute("visibility", "visible"); });
+        dotsets.forEach((ds) => {
+          const r = ds.data.find((d) => d.year === yrC);
+          [[ds.d1, "fd"], [ds.d2, "ca"]].forEach(([dd, k]) => {
+            if (r) { dd.setAttribute("cx", x(yrC)); dd.setAttribute("cy", y(r[k])); dd.setAttribute("visibility", "visible"); }
+            else dd.setAttribute("visibility", "hidden");
+          });
+        });
+        const r = data.find((d) => d.year === yrC);
+        if (!r) { showTip(e, `${c.name} · ${yrC}`, [], "No data for this year"); return; }
+        const gap = r.ca - r.fd;
+        showTip(e, `${c.name} · ${yrC}`, [
+          { color: fdC, value: fmt(r.fd) + "%", name: "Fiscal balance" },
+          { color: caC, value: fmt(r.ca) + "%", name: "Current account" },
+        ], `Both in deficit: ${r.fd < 0 && r.ca < 0 ? "yes" : "no"} · gap ${gap.toFixed(1)} pts`);
+      });
+      hit.addEventListener("pointerleave", () => {
+        hideTip(); hairs.forEach((hh) => hh.setAttribute("visibility", "hidden"));
+        dotsets.forEach((ds) => { ds.d1.setAttribute("visibility", "hidden"); ds.d2.setAttribute("visibility", "hidden"); });
+      });
+    });
+  }
+
+  // ---------- 2. scatter small multiples ----------
+  function renderScatter() {
+    const root = document.getElementById("scatter"); root.replaceChildren();
+    const sets = COUNTRIES.map((c) => {
+      let d = byIso(c.iso);
+      if (state.scatterSample === "common") d = d.filter((r) => r.year >= COMMON_START);
+      if (state.scatterMode === "dif") d = d.slice(1).map((r, i) => ({ year: r.year, fd: r.fd - d[i].fd, ca: r.ca - d[i].ca }));
+      return { c, d };
+    });
+    const xs = sets.flatMap((s) => s.d.map((r) => r.fd)), ys = sets.flatMap((s) => s.d.map((r) => r.ca));
+    const pad = (lo, hi) => { const p = (hi - lo) * 0.06; return [lo - p, hi + p]; };
+    const [x0, x1] = pad(Math.min(...xs), Math.max(...xs)), [y0, y1] = pad(Math.min(...ys), Math.max(...ys));
+
+    sets.forEach(({ c, d }) => {
+      const wrap = document.createElement("div");
+      const fit = ols(d.map((r) => r.fd), d.map((r) => r.ca));
+      const label = c.short + (state.scatterSample === "common" ? " (common 2001-2024)" : " (full)");
+      const res = results.find((r) => r.sample.startsWith(label.split(" (")[0]) && r.sample.includes(state.scatterSample === "common" ? "common" : "full"));
+      const p = res ? res[state.scatterMode + "_p"] : null;
+      const h = document.createElement("div"); h.className = "panel-title"; h.textContent = c.name;
+      const sub = document.createElement("div"); sub.className = "panel-sub";
+      sub.textContent = `slope ${fmt(fit.b, 2)}` + (p != null ? ` · p ${p < 0.001 ? "< 0.001" : "= " + fmtP(p)}${p < 0.05 ? " ✓ significant" : ""}` : "") + ` · n = ${d.length}`;
+      const chart = document.createElement("div"); chart.className = "chart";
+      wrap.append(h, sub, chart); root.appendChild(wrap);
+
+      const W = Math.max(260, chart.clientWidth || root.clientWidth / 3), H = Math.round(W * 0.85);
+      const m = { l: 34, r: 8, t: 8, b: 30 };
+      const x = scale(x0, x1, m.l, W - m.r), y = scale(y0, y1, H - m.b, m.t);
+      const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${c.name} scatter of current account against fiscal balance` }, chart);
+      for (const t of niceTicks(y0, y1, 4)) {
+        el("line", { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? "zero" : "grid" }, svg);
+        txt(svg, m.l - 5, y(t) + 4, String(t), { "text-anchor": "end" });
+      }
+      for (const t of niceTicks(x0, x1, 4)) {
+        el("line", { x1: x(t), x2: x(t), y1: m.t, y2: H - m.b, class: t === 0 ? "zero" : "grid" }, svg);
+        txt(svg, x(t), H - m.b + 14, String(t), { "text-anchor": "middle" });
+      }
+      txt(svg, (m.l + W - m.r) / 2, H - 2, state.scatterMode === "dif" ? "Δ fiscal balance →" : "Fiscal balance →", { "text-anchor": "middle" });
+      txt(svg, m.l + 4, m.t + 10, state.scatterMode === "dif" ? "↑ Δ current account" : "↑ current account");
+      const col = css(c.color);
+      const cid = "clip-" + c.iso;
+      el("rect", { x: m.l, y: m.t, width: W - m.r - m.l, height: H - m.b - m.t }, el("clipPath", { id: cid }, svg));
+      el("line", { "clip-path": `url(#${cid})`, x1: x(x0), y1: y(fit.a + fit.b * x0), x2: x(x1), y2: y(fit.a + fit.b * x1), stroke: col, "stroke-width": 2, "stroke-linecap": "round", opacity: 0.9 }, svg);
+      const dots = d.map((r) => el("circle", { cx: x(r.fd), cy: y(r.ca), r: 4, fill: col, class: "pt", "fill-opacity": 0.85 }, svg));
+      const hl = el("circle", { r: 7, fill: "none", stroke: css("--text-primary"), "stroke-width": 1.5, visibility: "hidden" }, svg);
+      // nearest-point hover
+      const hit = el("rect", { x: 0, y: 0, width: W, height: H, fill: "transparent" }, svg);
+      hit.addEventListener("pointermove", (e) => {
+        const bb = svg.getBoundingClientRect(), k = W / bb.width;
+        const px = (e.clientX - bb.left) * k, py = (e.clientY - bb.top) * k;
+        let best = -1, bd = Infinity;
+        d.forEach((r, i) => { const dd = (x(r.fd) - px) ** 2 + (y(r.ca) - py) ** 2; if (dd < bd) { bd = dd; best = i; } });
+        if (best < 0 || bd > 40 * 40) { hl.setAttribute("visibility", "hidden"); hideTip(); return; }
+        const r = d[best];
+        hl.setAttribute("cx", x(r.fd)); hl.setAttribute("cy", y(r.ca)); hl.setAttribute("visibility", "visible");
+        const pre = state.scatterMode === "dif" ? "Δ " : "";
+        showTip(e, `${c.name} · ${r.year}${state.scatterMode === "dif" ? " vs " + (r.year - 1) : ""}`, [
+          { color: col, value: fmt(r.fd) + (state.scatterMode === "dif" ? " pts" : "%"), name: pre + "Fiscal balance" },
+          { color: col, value: fmt(r.ca) + (state.scatterMode === "dif" ? " pts" : "%"), name: pre + "Current account" },
+        ], `Fitted line predicts ${fmt(fit.a + fit.b * r.fd)} for the current account`);
+      });
+      hit.addEventListener("pointerleave", () => { hl.setAttribute("visibility", "hidden"); hideTip(); });
+    });
+  }
+
+  // ---------- 3. rolling correlation ----------
+  function renderRolling() {
+    const root = document.getElementById("rolling"); root.replaceChildren();
+    const leg = document.getElementById("rollLegend"); leg.replaceChildren();
+    const Wn = state.window;
+    const series = COUNTRIES.map((c) => {
+      const d = byIso(c.iso), pts = [];
+      for (let i = Wn - 1; i < d.length; i++) {
+        const w = d.slice(i - Wn + 1, i + 1);
+        pts.push({ year: d[i].year, v: corr(w.map((r) => r.fd), w.map((r) => r.ca)), from: w[0].year });
+      }
+      return { c, pts, col: css(c.color) };
+    });
+    series.forEach((s) => {
+      const sp = document.createElement("span");
+      const k = document.createElement("i"); k.className = "lkey"; k.style.background = s.col;
+      sp.append(k, document.createTextNode(s.c.name)); leg.appendChild(sp);
+    });
+    const W = Math.max(320, root.clientWidth), H = W < 600 ? 280 : 360;
+    const m = { l: 40, r: W < 600 ? 70 : 90, t: 12, b: 28 };
+    const yrs = series.flatMap((s) => s.pts.map((p) => p.year));
+    const xa = Math.min(...yrs), xb = 2024;
+    const x = scale(xa, xb, m.l, W - m.r), y = scale(-1, 1, H - m.b, m.t);
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `${Wn}-year rolling correlation of fiscal balance and current account` }, root);
+    for (const t of [-1, -0.5, 0, 0.5, 1]) {
+      el("line", { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? "zero" : "grid" }, svg);
+      txt(svg, m.l - 6, y(t) + 4, t === 0 ? "0" : fmt(t, 1), { "text-anchor": "end" });
+    }
+    txt(svg, m.l + 4, y(1) + 14, "Twin deficits ↑", {});
+    txt(svg, m.l + 4, y(-1) - 6, "Opposite moves ↓", {});
+    for (const t of niceTicks(xa, xb, 6)) txt(svg, x(t), H - 8, String(t), { "text-anchor": "middle" });
+    series.forEach((s) => {
+      el("path", { d: s.pts.map((p, i) => (i ? "L" : "M") + x(p.year).toFixed(1) + "," + y(p.v).toFixed(1)).join(""), class: "line", stroke: s.col }, svg);
+    });
+    // end labels, nudged apart
+    const ends = series.map((s) => { const p = s.pts[s.pts.length - 1]; return { s, p, ly: y(p.v) }; }).sort((a, b) => a.ly - b.ly);
+    for (let i = 1; i < ends.length; i++) if (ends[i].ly - ends[i - 1].ly < 14) ends[i].ly = ends[i - 1].ly + 14;
+    ends.forEach((e) => {
+      el("circle", { cx: x(e.p.year), cy: y(e.p.v), r: 4, fill: e.s.col, class: "pt" }, svg);
+      txt(svg, x(e.p.year) + 8, e.ly + 4, `${e.s.c.short} ${e.p.v.toFixed(2)}`, { class: "lbl" });
+    });
+    const hair = el("line", { y1: m.t, y2: H - m.b, class: "xhair", visibility: "hidden" }, svg);
+    const dots = series.map((s) => el("circle", { r: 4, fill: s.col, class: "pt", visibility: "hidden" }, svg));
+    const hit = el("rect", { x: m.l, y: 0, width: W - m.r - m.l, height: H, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", (e) => {
+      const bb = svg.getBoundingClientRect();
+      const yr = Math.max(xa, Math.min(xb, Math.round(scale(m.l, W - m.r, xa, xb)(((e.clientX - bb.left) / bb.width) * W))));
+      hair.setAttribute("x1", x(yr)); hair.setAttribute("x2", x(yr)); hair.setAttribute("visibility", "visible");
+      const rows = [];
+      series.forEach((s, i) => {
+        const p = s.pts.find((q) => q.year === yr);
+        if (p) { dots[i].setAttribute("cx", x(yr)); dots[i].setAttribute("cy", y(p.v)); dots[i].setAttribute("visibility", "visible"); }
+        else dots[i].setAttribute("visibility", "hidden");
+        rows.push({ color: s.col, value: p ? fmt(p.v, 2) : "n/a", name: s.c.name });
+      });
+      showTip(e, `Window ${yr - Wn + 1}–${yr}`, rows, `${Wn}-year correlation of fiscal balance and current account`);
+    });
+    hit.addEventListener("pointerleave", () => { hair.setAttribute("visibility", "hidden"); dots.forEach((d) => d.setAttribute("visibility", "hidden")); hideTip(); });
+  }
+
+  // ---------- 4. coefficient plot ----------
+  function countryOf(sample) { return COUNTRIES.find((c) => sample.startsWith(c.short)); }
+  function renderCoef() {
+    const root = document.getElementById("coef"); root.replaceChildren();
+    const k = state.coefMode;
+    const rows = results.map((r) => ({ r, c: countryOf(r.sample), b: r[k + "_slope"], se: r[k + "_se"], p: r[k + "_p"] }));
+    const W = Math.max(320, root.clientWidth), rowH = 40;
+    const m = { l: W < 600 ? 150 : 210, r: 70, t: 22, b: 30 };
+    const H = m.t + m.b + rows.length * rowH + 14;
+    const lo = Math.min(-0.4, ...rows.map((d) => d.b - 1.96 * d.se)), hi = Math.max(0.4, ...rows.map((d) => d.b + 1.96 * d.se));
+    const x = scale(lo, hi, m.l, W - m.r);
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Slope estimates with 95% confidence intervals" }, root);
+    for (const t of niceTicks(lo, hi, 6)) {
+      el("line", { x1: x(t), x2: x(t), y1: m.t - 6, y2: H - m.b, class: t === 0 ? "zero" : "grid" }, svg);
+      txt(svg, x(t), H - m.b + 16, t === 0 ? "0" : fmt(t, 1), { "text-anchor": "middle" });
+    }
+    txt(svg, x(0) + 6, m.t - 8, "Twin deficits →", {});
+    txt(svg, x(0) - 6, m.t - 8, "← Opposite", { "text-anchor": "end" });
+    let yy = m.t + rowH / 2;
+    rows.forEach((d, i) => {
+      if (i === 3) { yy += 14; }
+      const cy = yy, col = css(d.c.color);
+      const sample = d.r.sample.includes("common") ? "2001–2024" : `${d.r.first}–${d.r.last}`;
+      txt(svg, 8, cy - 2, d.c.name, { class: "lbl" });
+      txt(svg, 8, cy + 12, sample + (i < 3 ? " · common" : " · full"), {});
+      el("line", { x1: x(d.b - 1.96 * d.se), x2: x(d.b + 1.96 * d.se), y1: cy, y2: cy, stroke: col, "stroke-width": 2, "stroke-linecap": "round" }, svg);
+      el("circle", { cx: x(d.b), cy, r: 5, fill: d.p < 0.05 ? col : css("--surface-1"), stroke: col, "stroke-width": 2 }, svg);
+      txt(svg, W - m.r + 8, cy + 4, fmt(d.b, 2) + (d.p < 0.05 ? "*" : ""), { class: "lbl" });
+      const hit = el("rect", { x: 0, y: cy - rowH / 2, width: W, height: rowH, fill: "transparent", tabindex: 0 }, svg);
+      const show = (e) => showTip(e, d.r.sample, [
+        { color: col, value: fmt(d.b, 3), name: "Slope" },
+        { color: "", value: d.se.toFixed(3), name: "Newey-West SE" },
+        { color: "", value: `[${fmt(d.b - 1.96 * d.se, 2)}, ${fmt(d.b + 1.96 * d.se, 2)}]`, name: "95% CI" },
+        { color: "", value: fmtP(d.p), name: "p-value" },
+      ], d.p < 0.05 ? "Significant at 5%" : "Not significant at 5%");
+      hit.addEventListener("pointermove", show);
+      hit.addEventListener("pointerleave", hideTip);
+      hit.addEventListener("focus", () => { const b = hit.getBoundingClientRect(); show({ clientX: b.left + W / 2, clientY: b.top }); });
+      hit.addEventListener("blur", hideTip);
+      yy += rowH;
+    });
+    txt(svg, m.l, H - 4, "Filled dot = significant at 5% (*). Line = 95% confidence interval.", {});
+  }
+
+  // ---------- results table ----------
+  function renderTable() {
+    const t = document.getElementById("resTable"); t.replaceChildren();
+    const cols = [
+      ["Levels", "lev"], ["Levels excl. COVID", "levX"], ["Levels + COVID dummy", "levD"],
+      ["Differences", "dif"], ["Diff. excl. COVID", "difX"], ["Diff. + COVID dummy", "difD"],
+    ];
+    const thead = t.createTHead().insertRow();
+    ["Sample", "n", ...cols.map((c) => c[0]), "Corr (levels)", "Corr (diff.)", "PO p"].forEach((h) => {
+      const th = document.createElement("th"); th.textContent = h; thead.appendChild(th);
+    });
+    const tb = t.createTBody();
+    results.forEach((r) => {
+      const tr = tb.insertRow();
+      tr.insertCell().textContent = r.sample;
+      tr.insertCell().textContent = r.n;
+      cols.forEach(([, k]) => {
+        const td = tr.insertCell(), b = r[k + "_slope"], p = r[k + "_p"];
+        if (p < 0.05) td.className = "sig";
+        const v = document.createElement("span"); v.className = "v"; v.textContent = b.toFixed(3);
+        const ps = document.createElement("span"); ps.className = "p"; ps.textContent = ` (${fmtP(p)})`;
+        td.append(v, ps);
+      });
+      tr.insertCell().textContent = r.cor_lev.toFixed(2);
+      tr.insertCell().textContent = r.cor_dif.toFixed(2);
+      tr.insertCell().textContent = r.po_p >= 0.15 ? "≥0.15" : r.po_p.toFixed(3);
+    });
+  }
+
+  function renderAll() {
+    if (!panel.length) return;
+    hideTip();
+    renderStats(); renderLevels(); renderScatter(); renderRolling(); renderCoef(); renderTable();
+  }
+
+  // ---------- boot ----------
+  segControl("scatterSample", "scatterSample");
+  segControl("scatterMode", "scatterMode");
+  segControl("coefMode", "coefMode");
+  const win = document.getElementById("win");
+  win.addEventListener("input", () => { state.window = +win.value; document.getElementById("winVal").textContent = win.value; renderRolling(); });
+  let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(renderAll, 120); });
+
+  Promise.all([
+    fetch("../twin_deficits_merged.csv").then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); }),
+    fetch("../twin_deficits_results.csv").then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); }),
+  ]).then(([a, b]) => {
+    panel = parseCSV(a); results = parseCSV(b);
+    renderAll();
+  }).catch((err) => {
+    const box = document.createElement("div"); box.className = "err";
+    box.textContent = "Could not load the CSV files (" + err.message + "). Start the local server from the Twin_deficit_research folder: python3 -m http.server 8000, then open http://localhost:8000/website/";
+    document.querySelector(".hero").after(box);
+  });
+})();
+</script>
+</body>
+</html>
