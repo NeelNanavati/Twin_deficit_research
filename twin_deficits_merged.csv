@@ -1,0 +1,125 @@
+"iso","year","country","fd","ca"
+"DEU",1991,"Germany",-3.21,-1.194
+"DEU",1992,"Germany",-2.632,-0.983
+"DEU",1993,"Germany",-3.11,-0.781
+"DEU",1994,"Germany",-2.542,-1.31
+"DEU",1995,"Germany",-9.437,-1.069
+"DEU",1996,"Germany",-3.638,-0.485
+"DEU",1997,"Germany",-3.027,-0.344
+"DEU",1998,"Germany",-2.65,-0.498
+"DEU",1999,"Germany",-1.866,-1.157
+"DEU",2000,"Germany",-1.714,-1.524
+"DEU",2001,"Germany",-3.125,-0.173
+"DEU",2002,"Germany",-4.086,1.954
+"DEU",2003,"Germany",-3.83,1.499
+"DEU",2004,"Germany",-3.421,4.514
+"DEU",2005,"Germany",-3.371,4.651
+"DEU",2006,"Germany",-1.755,5.81
+"DEU",2007,"Germany",0.155,6.672
+"DEU",2008,"Germany",-0.263,5.601
+"DEU",2009,"Germany",-3.176,5.806
+"DEU",2010,"Germany",-4.421,5.744
+"DEU",2011,"Germany",-0.84,6.292
+"DEU",2012,"Germany",-0.054,7.19
+"DEU",2013,"Germany",0.123,6.71
+"DEU",2014,"Germany",0.732,7.235
+"DEU",2015,"Germany",0.915,8.101
+"DEU",2016,"Germany",1.134,8.909
+"DEU",2017,"Germany",1.337,8.062
+"DEU",2018,"Germany",1.883,8.421
+"DEU",2019,"Germany",1.327,7.873
+"DEU",2020,"Germany",-4.38,6.318
+"DEU",2021,"Germany",-3.167,6.909
+"DEU",2022,"Germany",-1.909,3.811
+"DEU",2023,"Germany",-2.494,5.517
+"DEU",2024,"Germany",-2.663,5.809
+"JPN",1980,"Japan",-4.316,-0.931
+"JPN",1981,"Japan",-3.766,0.374
+"JPN",1982,"Japan",-3.727,0.578
+"JPN",1983,"Japan",-3.859,1.6
+"JPN",1984,"Japan",-2.566,2.543
+"JPN",1985,"Japan",-1.34,3.438
+"JPN",1986,"Japan",-1.331,3.898
+"JPN",1987,"Japan",-0.351,3.192
+"JPN",1988,"Japan",0.484,2.476
+"JPN",1989,"Japan",1.204,1.985
+"JPN",1990,"Japan",1.915,1.372
+"JPN",1991,"Japan",1.637,1.825
+"JPN",1992,"Japan",0.562,2.76
+"JPN",1993,"Japan",-2.338,2.843
+"JPN",1994,"Japan",-3.698,2.558
+"JPN",1995,"Japan",-4.225,1.958
+"JPN",1996,"Japan",-4.754,1.372
+"JPN",1997,"Japan",-3.439,2.077
+"JPN",1998,"Japan",-9.912,2.774
+"JPN",1999,"Japan",-6.675,2.437
+"JPN",2000,"Japan",-7.173,2.59
+"JPN",2001,"Japan",-6.109,1.942
+"JPN",2002,"Japan",-7.219,2.571
+"JPN",2003,"Japan",-7.346,3.049
+"JPN",2004,"Japan",-5.262,3.684
+"JPN",2005,"Japan",-4.392,3.489
+"JPN",2006,"Japan",-2.995,3.754
+"JPN",2007,"Japan",-2.858,4.588
+"JPN",2008,"Japan",-4.067,2.763
+"JPN",2009,"Japan",-9.625,2.721
+"JPN",2010,"Japan",-9.052,3.804
+"JPN",2011,"Japan",-9.019,2.068
+"JPN",2012,"Japan",-8.224,0.942
+"JPN",2013,"Japan",-7.62,0.872
+"JPN",2014,"Japan",-5.58,0.738
+"JPN",2015,"Japan",-3.64,3.009
+"JPN",2016,"Japan",-3.576,3.87
+"JPN",2017,"Japan",-3.048,4.04
+"JPN",2018,"Japan",-2.443,3.45
+"JPN",2019,"Japan",-3.045,3.362
+"JPN",2020,"Japan",-9.037,2.889
+"JPN",2021,"Japan",-6.324,3.754
+"JPN",2022,"Japan",-4.227,2.021
+"JPN",2023,"Japan",-2.395,3.563
+"JPN",2024,"Japan",-1.667,4.515
+"USA",1980,"United States",-4.44163,0.081
+"USA",1981,"United States",-3.99312,0.157
+"USA",1982,"United States",-6.55595,-0.165
+"USA",1983,"United States",-7.21138,-1.065
+"USA",1984,"United States",-6.07661,-2.337
+"USA",1985,"United States",-6.24278,-2.723
+"USA",1986,"United States",-6.44198,-3.214
+"USA",1987,"United States",-5.43646,-3.309
+"USA",1988,"United States",-4.70318,-2.314
+"USA",1989,"United States",-4.47676,-1.763
+"USA",1990,"United States",-5.47275,-1.324
+"USA",1991,"United States",-6.2909,0.047
+"USA",1992,"United States",-7.28187,-0.792
+"USA",1993,"United States",-6.44414,-1.237
+"USA",1994,"United States",-5.05305,-1.669
+"USA",1995,"United States",-4.689,-1.487
+"USA",1996,"United States",-3.53895,-1.546
+"USA",1997,"United States",-2.09739,-1.641
+"USA",1998,"United States",-0.93972,-2.373
+"USA",1999,"United States",-0.51633,-2.976
+"USA",2000,"United States",0.31381,-3.921
+"USA",2001,"United States",-1.90316,-3.724
+"USA",2002,"United States",-5.35295,-4.173
+"USA",2003,"United States",-6.48142,-4.559
+"USA",2004,"United States",-5.84558,-5.205
+"USA",2005,"United States",-4.54441,-5.746
+"USA",2006,"United States",-3.43376,-5.911
+"USA",2007,"United States",-4.08959,-5.089
+"USA",2008,"United States",-7.4692,-4.716
+"USA",2009,"United States",-13.2158,-2.623
+"USA",2010,"United States",-12.50497,-2.871
+"USA",2011,"United States",-11.08171,-2.919
+"USA",2012,"United States",-9.29239,-2.573
+"USA",2013,"United States",-5.90796,-2.011
+"USA",2014,"United States",-5.23468,-2.102
+"USA",2015,"United States",-4.64333,-2.233
+"USA",2016,"United States",-5.41672,-2.107
+"USA",2017,"United States",-4.42758,-1.874
+"USA",2018,"United States",-6.11925,-2.125
+"USA",2019,"United States",-6.70523,-2.052
+"USA",2020,"United States",-14.97287,-2.777
+"USA",2021,"United States",-11.9606,-3.619
+"USA",2022,"United States",-3.74023,-3.812
+"USA",2023,"United States",-7.90864,-3.337
+"USA",2024,"United States",-8.01054,-4.046
